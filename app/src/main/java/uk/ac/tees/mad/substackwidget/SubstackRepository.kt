@@ -2,7 +2,7 @@ package uk.ac.tees.mad.substackwidget
 
 import com.prof18.rssparser.RssParser
 
-class SubstackRepository {
+class SubstackRepositoryImpl : SubstackRepository {
     private val parser = RssParser()
 
     suspend fun fetchLatestPosts(feedUrl: String, limit: Int = 5): List<SubstackPost> {

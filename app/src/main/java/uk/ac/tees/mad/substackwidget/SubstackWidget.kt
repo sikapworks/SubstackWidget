@@ -31,7 +31,7 @@ class SubstackWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId
     ) {
-        val feedUrl = "https://<your-publication>.substack.com/feed"
+        val feedUrl = "https://androidengineers.substack.com/feed"
         val posts = repository.fetchLatestPosts(feedUrl, limit = 5)
         provideContent {
             Column(
