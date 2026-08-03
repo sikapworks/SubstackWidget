@@ -7,7 +7,7 @@ interface SubstackRepository {
 
     suspend fun fetchPosts(publication: Publication, limit: Int): List<Post>
 
-    suspend fun validatePublication(handle: String): Boolean
+    suspend fun resolveDisplayName(handle: String): String?
 
     suspend fun getSavedPublications(widgetId: Int): List<Publication>
 

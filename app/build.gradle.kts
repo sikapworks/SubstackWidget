@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.2.10"
 }
 
 android {
@@ -58,9 +59,9 @@ dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")
 
-    //OkHttp - handles the actual HTTP request to fetch the feed
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
-    //A lightweight Kotlin-friendly library that parses RSS XML into simple data classes
-    implementation("com.prof18.rssparser:rssparser:6.0.7")
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.11.0") // let's Retrofit return a raw String body
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }
