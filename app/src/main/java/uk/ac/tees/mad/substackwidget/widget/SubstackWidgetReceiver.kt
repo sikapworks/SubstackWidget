@@ -1,8 +1,7 @@
-package uk.ac.tees.mad.substackwidget
+package uk.ac.tees.mad.substackwidget.widget
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import uk.ac.tees.mad.substackwidget.widget.SubstackWidget
 
 class SubstackWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = SubstackWidget()

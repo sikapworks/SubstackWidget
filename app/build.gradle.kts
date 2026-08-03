@@ -42,6 +42,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended) //icons
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -64,4 +65,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.11.0") // let's Retrofit return a raw String body
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
+    //viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 }

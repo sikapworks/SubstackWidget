@@ -1,19 +1,18 @@
 package uk.ac.tees.mad.substackwidget.data.local
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uk.ac.tees.mad.substackwidget.domain.model.Publication
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "widget_publications")
+private val Context.widgetDataStore by preferencesDataStore(name = "widget_publications")
 
-class WidgetPublicationsDataStore(
-    private val context: Context
-) {
+class WidgetPublicationsDataStore(private val context: Context) {
+
     private fun keyFor(widgetId: Int) = stringPreferencesKey("publications_$widgetId")
 
     suspend fun getPublications(widgetId: Int): List<Publication> {
@@ -25,6 +24,7 @@ class WidgetPublicationsDataStore(
             emptyList()
         }
     }
+
     suspend fun savePublications(widgetId: Int, publications: List<Publication>) {
         context.widgetDataStore.edit { prefs ->
             prefs[keyFor(widgetId)] = Json.encodeToString(publications)

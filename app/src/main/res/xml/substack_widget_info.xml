@@ -5,5 +5,6 @@
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/glance_loading_layout"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:configure="uk.ac.tees.mad.substackwidget.WidgetConfigActivity">
 </appwidget-provider>
