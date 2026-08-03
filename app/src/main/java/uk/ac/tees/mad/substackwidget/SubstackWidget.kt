@@ -25,14 +25,14 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 
 class SubstackWidget : GlanceAppWidget() {
-
     private val repository = SubstackRepository()
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val feedUrl = "https://androidengineers.substack.com/feed"
-
-        val posts = repository.fetchLatestPosts(feedUrl, limit = 4)
-
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId
+    ) {
+        val feedUrl = "https://<your-publication>.substack.com/feed"
+        val posts = repository.fetchLatestPosts(feedUrl, limit = 5)
         provideContent {
             Column(
                 modifier = GlanceModifier
@@ -46,16 +46,17 @@ class SubstackWidget : GlanceAppWidget() {
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
-                        color = ColorProvider(Color(0xFFFF6719)) // Substack-ish orange
+                        color = ColorProvider(Color(0xFFFF6719))
                     )
                 )
-
                 Spacer(modifier = GlanceModifier.height(10.dp))
-
                 if (posts.isEmpty()) {
                     Text(
                         text = "No posts found",
-                        style = TextStyle(fontSize = 13.sp, color = ColorProvider(Color.Gray))
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = ColorProvider(Color.Gray)
+                        )
                     )
                 } else {
                     posts.forEachIndexed { index, post ->
@@ -75,7 +76,7 @@ class SubstackWidget : GlanceAppWidget() {
                         Text(
                             text = formatDate(post.pubDate),
                             style = TextStyle(
-                                fontSize = 11.sp,
+                                fontSize = 12.sp,
                                 color = ColorProvider(Color(0xFF888888))
                             )
                         )
@@ -83,6 +84,7 @@ class SubstackWidget : GlanceAppWidget() {
                             Spacer(modifier = GlanceModifier.height(8.dp))
                         }
                     }
+
                 }
             }
         }
