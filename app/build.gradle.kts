@@ -1,16 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.2.10"
+    alias(libs.plugins.devtools.ksp)
+    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
 }
 
 android {
     namespace = "uk.ac.tees.mad.substackwidget"
-    compileSdk {
-        version = release(37) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
+//    compileSdk {
+//        version = release(37) {
+//            minorApiLevel = 1
+//        }
+//    }
 
     defaultConfig {
         applicationId = "uk.ac.tees.mad.substackwidget"
@@ -68,4 +71,14 @@ dependencies {
 
     //viewmodel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+    //OkHttp
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+// Hilt
+    implementation("com.google.dagger:hilt-android:2.59.2")
+    ksp("com.google.dagger:hilt-compiler:2.59.2")
+
+    //     Hilt Navigation Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

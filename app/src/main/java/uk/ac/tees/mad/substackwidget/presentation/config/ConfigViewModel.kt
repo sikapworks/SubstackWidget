@@ -2,6 +2,7 @@ package uk.ac.tees.mad.substackwidget.presentation.config
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,16 +10,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.substackwidget.domain.usecase.AddPublicationResult
 import uk.ac.tees.mad.substackwidget.domain.usecase.ManagePublicationsUseCase
+import javax.inject.Inject
 
-class ConfigViewModel(
-    private val widgetId: Int,
+@HiltViewModel
+class ConfigViewModel @Inject constructor(
     private val managePublicationsUseCase: ManagePublicationsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ConfigUiState(widgetId = widgetId))
+    private var widgetId: Int = -1
+    private val _uiState = MutableStateFlow(ConfigUiState())
     val uiState: StateFlow<ConfigUiState> = _uiState.asStateFlow()
 
-    init {
+    fun init(widgetId: Int) {
+        this.widgetId = widgetId
+        _uiState.update { it.copy(widgetId = widgetId) }
         loadSaved()
     }
 
@@ -39,23 +44,26 @@ class ConfigViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isChecking = true, errorMessage = null) }
-
             when (val result = managePublicationsUseCase.add(widgetId, handle)) {
-                is AddPublicationResult.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            publications = it.publications + result.publication,
-                            inputText = "",
-                            isChecking = false
-                        )
-                    }
+                is AddPublicationResult.Success -> _uiState.update {
+                    it.copy(
+                        publications = it.publications + result.publication,
+                        inputText = "",
+                        isChecking = false
+                    )
                 }
+
                 AddPublicationResult.NotFound -> _uiState.update {
-                    it.copy(isChecking = false, errorMessage = "Couldn't find that publication — check the spelling")
+                    it.copy(
+                        isChecking = false,
+                        errorMessage = "Couldn't find that publication — check the spelling"
+                    )
                 }
+
                 AddPublicationResult.AlreadyAdded -> _uiState.update {
                     it.copy(isChecking = false, errorMessage = "Already added")
                 }
+
                 AddPublicationResult.Empty -> _uiState.update {
                     it.copy(isChecking = false, errorMessage = "Type a publication handle first")
                 }
@@ -66,9 +74,7 @@ class ConfigViewModel(
     fun removePublication(handle: String) {
         viewModelScope.launch {
             managePublicationsUseCase.remove(widgetId, handle)
-            _uiState.update { state ->
-                state.copy(publications = state.publications.filterNot { it.handle == handle })
-            }
+            _uiState.update { state -> state.copy(publications = state.publications.filterNot { it.handle == handle }) }
         }
     }
 }

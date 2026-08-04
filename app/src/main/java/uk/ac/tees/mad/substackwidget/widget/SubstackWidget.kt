@@ -1,7 +1,7 @@
 package uk.ac.tees.mad.substackwidget.widget
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
+import android.util.Log
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -15,35 +15,51 @@ import androidx.glance.background
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
-import uk.ac.tees.mad.substackwidget.di.AppContainer
+import dagger.hilt.android.EntryPointAccessors
+import uk.ac.tees.mad.substackwidget.di.WidgetEntryPoint
+
+private const val TAG = "SubstackWidget"
 
 class SubstackWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
-        val appContainer = AppContainer(context.applicationContext)
 
-        val groupedFeed = appContainer.getGroupedFeedUseCase(appWidgetId)
-        val rows = groupedFeed.toFeedRows()
-        val hasAnyPublications = groupedFeed.isNotEmpty()
+        val entryPoint = EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            WidgetEntryPoint::class.java
+        )
+        val getGroupedFeedUseCase = entryPoint.getGroupedFeedUseCase()
+
+        var rows: List<FeedRow> = emptyList()
+        var hasAnyPublications = false
+        var loadFailed = false
+
+        try {
+            val groupedFeed = getGroupedFeedUseCase(appWidgetId)
+            Log.d(
+                TAG,
+                "Loaded ${groupedFeed.size} publications, posts: ${groupedFeed.map { it.posts.size }}"
+            )
+            rows = groupedFeed.toFeedRows()
+            hasAnyPublications = groupedFeed.isNotEmpty()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load grouped feed", e)
+            loadFailed = true
+        }
 
         provideContent {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .background(Color(0xFFFFF8F0))
+                    .background(WidgetColors.Background)
                     .cornerRadius(16.dp)
-                    .padding(12.dp)
+                    .padding(16.dp)
             ) {
                 when {
-                    !hasAnyPublications -> EmptyState(
-                        message = "Tap this widget to add a publication"
-                    )
-
-                    rows.isEmpty() -> EmptyState(
-                        message = "No posts found — check back soon"
-                    )
-
+                    loadFailed -> EmptyState("Something went wrong — check your connection")
+                    !hasAnyPublications -> EmptyState("Tap this widget to add a publication")
+                    rows.isEmpty() -> EmptyState("No posts found — check back soon")
                     else -> {
                         LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
                             items(rows, itemId = { rowId(it) }) { row ->

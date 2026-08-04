@@ -2,7 +2,6 @@ package uk.ac.tees.mad.substackwidget.widget
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
@@ -15,7 +14,6 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import uk.ac.tees.mad.substackwidget.domain.model.Post
 import uk.ac.tees.mad.substackwidget.formatDate
 
@@ -27,7 +25,7 @@ fun SectionHeaderView(title: String) {
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = ColorProvider(Color(0xFFFF6719))
+                color = WidgetColors.Accent
             )
         )
     }
@@ -48,19 +46,19 @@ fun PostRowView(post: Post) {
             style = TextStyle(
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = ColorProvider(Color(0xFF1A1A1A))
+                color = WidgetColors.TitleText
             )
         )
         if (post.snippet.isNotBlank()) {
             Text(
                 text = post.snippet,
                 maxLines = 2,
-                style = TextStyle(fontSize = 12.sp, color = ColorProvider(Color(0xFF555555)))
+                style = TextStyle(fontSize = 12.sp, color = WidgetColors.SubtleText)
             )
         }
         Text(
             text = formatDate(post.pubDate),
-            style = TextStyle(fontSize = 11.sp, color = ColorProvider(Color(0xFF888888)))
+            style = TextStyle(fontSize = 11.sp, color = WidgetColors.SubtleText)
         )
     }
 }
@@ -72,7 +70,7 @@ fun EmptyState(message: String) {
     ) {
         Text(
             text = message,
-            style = TextStyle(fontSize = 13.sp, color = ColorProvider(Color.Gray))
+            style = TextStyle(fontSize = 13.sp, color = WidgetColors.SubtleText)
         )
     }
 }

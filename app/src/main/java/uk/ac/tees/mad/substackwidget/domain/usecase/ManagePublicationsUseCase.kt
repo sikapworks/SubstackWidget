@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.substackwidget.domain.usecase
 
+import javax.inject.Inject
 import uk.ac.tees.mad.substackwidget.domain.model.Publication
 import uk.ac.tees.mad.substackwidget.domain.repository.SubstackRepository
 
@@ -10,7 +11,7 @@ sealed class AddPublicationResult {
     data object Empty : AddPublicationResult()
 }
 
-class ManagePublicationsUseCase(
+class ManagePublicationsUseCase @Inject constructor(
     private val repository: SubstackRepository
 ) {
     suspend fun add(widgetId: Int, handle: String): AddPublicationResult {

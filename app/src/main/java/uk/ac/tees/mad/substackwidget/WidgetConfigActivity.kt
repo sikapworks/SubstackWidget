@@ -6,13 +6,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.viewmodel.compose.viewModel
-import uk.ac.tees.mad.substackwidget.di.AppContainer
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import uk.ac.tees.mad.substackwidget.presentation.config.ConfigScreen
-import uk.ac.tees.mad.substackwidget.presentation.config.ConfigViewModelFactory
+import uk.ac.tees.mad.substackwidget.presentation.config.ConfigViewModel
+import uk.ac.tees.mad.substackwidget.ui.theme.SubstackWidgetTheme
 
+@AndroidEntryPoint
 class WidgetConfigActivity : ComponentActivity() {
 
+    private val viewModel: ConfigViewModel by viewModels()
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,31 +27,24 @@ class WidgetConfigActivity : ComponentActivity() {
             AppWidgetManager.INVALID_APPWIDGET_ID
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
 
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish()
-            return
-        }
-
-        val appContainer = AppContainer(applicationContext)
+        // If opened from the launcher (not widget config flow), there's no real widgetId —
+        // that's fine, use a stable fallback so the app screen still works standalone.
+        val effectiveId = if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) 0 else appWidgetId
+        viewModel.init(effectiveId)
 
         setContent {
-            val viewModel: uk.ac.tees.mad.substackwidget.presentation.config.ConfigViewModel =
-                viewModel(
-                    factory = ConfigViewModelFactory(
-                        appWidgetId,
-                        appContainer.managePublicationsUseCase
-                    )
+            SubstackWidgetTheme {
+                ConfigScreen(
+                    viewModel = viewModel,
+                    onDone = {
+                        if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                            val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                            setResult(Activity.RESULT_OK, resultValue)
+                        }
+                        finish()
+                    }
                 )
-
-            ConfigScreen(
-                viewModel = viewModel,
-                onDone = {
-                    val resultValue =
-                        Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                    setResult(Activity.RESULT_OK, resultValue)
-                    finish()
-                }
-            )
+            }
         }
     }
 }
