@@ -10,10 +10,9 @@ class GetGroupedFeedUseCase @Inject constructor(
     private val repository: SubstackRepository
 ) {
     suspend operator fun invoke(
-        widgetId: Int,
         postsPerPublication: Int = 5
     ): List<PublicationFeed> {
-        val publications = repository.getSavedPublications(widgetId)
+        val publications = repository.getSavedPublications()
         return coroutineScope {
             publications.map { publication ->
                 async {

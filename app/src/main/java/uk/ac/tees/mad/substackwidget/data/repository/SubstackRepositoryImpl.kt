@@ -48,14 +48,14 @@ class SubstackRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSavedPublications(widgetId: Int): List<Publication> =
-        localDataSource.getPublications(widgetId)
+    override suspend fun getSavedPublications(): List<Publication> =
+        localDataSource.getPublications()
 
-    override suspend fun savePublications(widgetId: Int, publications: List<Publication>) =
-        localDataSource.savePublications(widgetId, publications)
+    override suspend fun savePublications(publications: List<Publication>) =
+        localDataSource.savePublications(publications)
 
-    override suspend fun removePublication(widgetId: Int, handle: String) =
-        localDataSource.removePublication(widgetId, handle)
+    override suspend fun removePublication(handle: String) =
+        localDataSource.removePublication(handle)
 
     private fun stripHtml(raw: String): String =
         HtmlCompat.fromHtml(raw, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim()

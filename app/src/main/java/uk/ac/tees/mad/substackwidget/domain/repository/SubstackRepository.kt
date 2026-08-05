@@ -9,9 +9,9 @@ interface SubstackRepository {
 
     suspend fun resolveDisplayName(handle: String): String?
 
-    suspend fun getSavedPublications(widgetId: Int): List<Publication>
+    suspend fun getSavedPublications(): List<Publication>
 
-    suspend fun savePublications(widgetId: Int, publications: List<Publication>)
+    suspend fun savePublications(publications: List<Publication>)
 
-    suspend fun removePublication(widgetId: Int, handle: String)
+    suspend fun removePublication(handle: String)
 }

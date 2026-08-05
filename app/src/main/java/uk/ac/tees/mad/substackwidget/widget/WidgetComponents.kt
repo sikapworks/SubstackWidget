@@ -2,6 +2,7 @@ package uk.ac.tees.mad.substackwidget.widget
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
@@ -17,7 +18,7 @@ import androidx.glance.text.TextStyle
 import uk.ac.tees.mad.substackwidget.domain.model.Post
 import uk.ac.tees.mad.substackwidget.formatDate
 
-@androidx.compose.runtime.Composable
+@Composable
 fun SectionHeaderView(title: String) {
     Column(modifier = GlanceModifier.fillMaxWidth().padding(top = 10.dp, bottom = 4.dp)) {
         Text(
@@ -31,7 +32,7 @@ fun SectionHeaderView(title: String) {
     }
 }
 
-@androidx.compose.runtime.Composable
+@Composable
 fun PostRowView(post: Post) {
     Column(
         modifier = GlanceModifier
@@ -63,14 +64,13 @@ fun PostRowView(post: Post) {
     }
 }
 
-@androidx.compose.runtime.Composable
-fun EmptyState(message: String) {
-    Column(
-        modifier = GlanceModifier.fillMaxSize().padding(16.dp)
-    ) {
-        Text(
-            text = message,
-            style = TextStyle(fontSize = 13.sp, color = WidgetColors.SubtleText)
-        )
+@Composable
+fun EmptyState(message: String, clickIntent: android.content.Intent?) {
+    var modifier = GlanceModifier.fillMaxSize().padding(16.dp)
+    if (clickIntent != null) {
+        modifier = modifier.clickable(actionStartActivity(clickIntent))
+    }
+    Column(modifier = modifier) {
+        Text(text = message, style = TextStyle(fontSize = 13.sp, color = WidgetColors.SubtleText))
     }
 }

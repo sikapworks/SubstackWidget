@@ -25,7 +25,7 @@ object NetworkModule {
     @Singleton
     fun providesOkHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.BASIC
         }
         return OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -49,16 +49,8 @@ object NetworkModule {
     fun provideSubstackApi(retrofit: Retrofit): SubstackApi =
         retrofit.create(SubstackApi::class.java)
 
-    @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): WidgetPublicationsDataStore =
-        WidgetPublicationsDataStore(context)
-
-    @Provides
-    @Singleton
-    fun provideSubstackRepository(
-        api: SubstackApi,
-        localDataStore: WidgetPublicationsDataStore
-    ): SubstackRepository =
-        SubstackRepositoryImpl(api, localDataStore)
+//    @Provides
+//    @Singleton
+//    fun provideDataStore(@ApplicationContext context: Context): WidgetPublicationsDataStore =
+//        WidgetPublicationsDataStore(context)
 }
